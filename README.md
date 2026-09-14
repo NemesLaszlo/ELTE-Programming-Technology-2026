@@ -66,13 +66,13 @@ The number in each cell is the task you have to solve from the given assignment'
 | RVCGKD | 3 | 4 | 4 |
 | E146S0 | 10 | 8 | 3 |
 | WHJJGM | 3 | 3 | 2 |
-| M6NSPT | 2 | 4 | 2 |
+| M6NSPT | 4 | 4 | 2 |
 | X0EVFY | 4 | 2 | 1 |
-| KM5U9D | 2 | 7 | 4 |
+| KM5U9D | 3 | 7 | 4 |
 | HV2D52 | 6 | 9 | 4 |
 | V9U0J5 | 9 | 10 | 2 |
 | SP6HPV | 7 | 9 | 3 |
-| YI9Z7P | 2 | 7 | 3 |
+| YI9Z7P | 9 | 7 | 3 |
 | N6AUD6 | 7 | 6 | 1 |
 | G6N785 | 4 | 3 | 4 |
 | Y06UR9 | 6 | 4 | 1 |
@@ -90,11 +90,11 @@ The number in each cell is the task you have to solve from the given assignment'
 | CRZ16B | 4 | 2 | 4 |
 | VOY9WD | 9 | 9 | 3 |
 | FH9PUD | 10 | 7 | 1 |
-| L4LIIC | 2 | 10 | 1 |
+| L4LIIC | 4 | 10 | 1 |
 | S7W93H | 4 | 5 | 3 |
 | IKWIUH | 7 | 4 | 1 |
 | A25ZGN | 4 | 8 | 2 |
-| YT495S | 2 | 4 | 3 |
+| YT495S | 6 | 4 | 3 |
 | D3KJRS | 10 | 10 | 4 |
 | FFXVSU | 5 | 2 | 2 |
 | RLHG56 | 3 | 9 | 2 |
@@ -104,5 +104,5 @@ The number in each cell is the task you have to solve from the given assignment'
 | J28PHQ | 3 | 2 | 4 |
 | Y9HY6E | 3 | 6 | 4 |
 | CW9YW6 | 6 | 5 | 4 |
-| M58XT5 | 2 | 7 | 3 |
+| M58XT5 | 4 | 7 | 3 |
 | LB6R74 | 6 | 6 | 1 |
