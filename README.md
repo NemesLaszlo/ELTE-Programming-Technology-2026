@@ -49,3 +49,60 @@ The course requirements are:
 
 **Computer lab test**:
 - **End of the semester** — exact date will be announced during the semester
+
+---
+
+### Assigned tasks
+
+The number in each cell is the task you have to solve from the given assignment's task set.
+
+#### Group 8
+
+| Neptun code | Assignment 1 | Assignment 2 | Assignment 3 |
+|---|---|---|---|
+| ZXUDOU | 3 | 2 | 1 |
+| CMRQ3R | 6 | 2 | 4 |
+| RUP525 | 4 | 3 | 3 |
+| RVCGKD | 3 | 4 | 4 |
+| E146S0 | 10 | 8 | 3 |
+| WHJJGM | 3 | 3 | 2 |
+| M6NSPT | 4 | 4 | 2 |
+| X0EVFY | 4 | 2 | 1 |
+| KM5U9D | 3 | 7 | 4 |
+| HV2D52 | 6 | 9 | 4 |
+| V9U0J5 | 9 | 10 | 2 |
+| SP6HPV | 7 | 9 | 3 |
+| YI9Z7P | 9 | 7 | 3 |
+| N6AUD6 | 7 | 6 | 1 |
+| G6N785 | 4 | 3 | 4 |
+| Y06UR9 | 6 | 4 | 1 |
+| G0V6XD | 5 | 10 | 1 |
+| KZC39D | 10 | 5 | 2 |
+| NG5ADO | 9 | 6 | 1 |
+| G31Z2O | 5 | 8 | 2 |
+| S9JTGO | 5 | 5 | 3 |
+
+#### Group 9
+
+| Neptun code | Assignment 1 | Assignment 2 | Assignment 3 |
+|---|---|---|---|
+| KPG3NU | 5 | 3 | 2 |
+| CRZ16B | 4 | 2 | 4 |
+| VOY9WD | 9 | 9 | 3 |
+| FH9PUD | 10 | 7 | 1 |
+| L4LIIC | 4 | 10 | 1 |
+| S7W93H | 4 | 5 | 3 |
+| IKWIUH | 7 | 4 | 1 |
+| A25ZGN | 4 | 8 | 2 |
+| YT495S | 6 | 4 | 3 |
+| D3KJRS | 10 | 10 | 4 |
+| FFXVSU | 5 | 2 | 2 |
+| RLHG56 | 3 | 9 | 2 |
+| Q4B6NV | 9 | 3 | 2 |
+| CK1PFI | 5 | 8 | 1 |
+| FY2FRP | 7 | 3 | 3 |
+| J28PHQ | 3 | 2 | 4 |
+| Y9HY6E | 3 | 6 | 4 |
+| CW9YW6 | 6 | 5 | 4 |
+| M58XT5 | 4 | 7 | 3 |
+| LB6R74 | 6 | 6 | 1 |
