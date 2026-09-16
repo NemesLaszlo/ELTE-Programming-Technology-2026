@@ -26,7 +26,7 @@ public abstract class Character {
         }
     }
 
-    public void attacked(Character character) {
+    private void attacked(Character character) {
         if (isAlive()) {
             applyDamageFrom(character);
         }
