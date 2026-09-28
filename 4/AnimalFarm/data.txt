@@ -1,0 +1,6 @@
+5
+E Evelyn 32 4 20 30 30 20
+K Gabrial 21 3 30 40 50
+T Charlie 134 8 20 40 20 30 10 20 40 50
+L Hanna 55 2 60 30
+K Greta 10 1 120
