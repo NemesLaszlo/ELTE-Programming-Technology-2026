@@ -19,7 +19,11 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
 /**
- * Az egyszerűsített számológép felülete.
+ * Az egyszerűsített számológép felülete (az MV "V" betűje: a nézet).
+ *
+ * A nézet felépíti a felületet, az eseménykezelői beolvassák az operandusokat,
+ * meghívják a modellt (CalcModel), majd a refresh() a modell állapota alapján
+ * frissíti a felületet. A nézet tehát egyben vezérlő is (ld. README, MV).
  *
  * Az ablak felépítése (komponensfa):
  * <pre>
@@ -38,6 +42,9 @@ public class CalcGUI {
 
     /** A komponensek közötti távolság pixelben. */
     private static final int GAP = 5;
+
+    /** A modell: itt történik a számolás, és itt van az eredmény. */
+    private final CalcModel model = new CalcModel();
 
     private final JFrame frame;
     private final JTextField operand1;
@@ -108,8 +115,10 @@ public class CalcGUI {
     }
 
     /**
-     * Létrehozza a menüsort. A menüpontok eseménykezelői lambdák: rövid,
-     * egyszer használt kódnál ez a legtömörebb forma.
+     * Létrehozza a menüsort. A menüpontok eseménykezelői lambdák. A lambda
+     * egy névtelen, helyben megírt függvény: e -> clear() jelentése "ha
+     * jön egy e esemény, hívd meg a clear()-t". Rövid, egyszer használt
+     * kódnál ez a legtömörebb forma.
      */
     private JMenuBar createMenuBar() {
         JMenu calcMenu = new JMenu("Calc");
@@ -145,7 +154,8 @@ public class CalcGUI {
     private void clear() {
         operand1.setText("");
         operand2.setText("");
-        result.setText("");
+        model.clearResult();
+        refresh();
         operand1.requestFocusInWindow();
     }
 
@@ -153,13 +163,21 @@ public class CalcGUI {
      * Az eredményt átírja az első operandusba, így láncolhatók a műveletek.
      */
     private void useResult() {
-        if (result.getText().isEmpty()) {
+        if (!model.hasResult()) {
             return;
         }
-        operand1.setText(result.getText());
+        operand1.setText(format(model.getResult()));
         operand2.setText("");
-        result.setText("");
+        model.clearResult();
+        refresh();
         operand2.requestFocusInWindow();
+    }
+
+    /**
+     * Az eredménymezőt mindig a modell állapotából írjuk ki, nem "kézzel".
+     */
+    private void refresh() {
+        result.setText(model.hasResult() ? format(model.getResult()) : "");
     }
 
     /**
@@ -211,7 +229,10 @@ public class CalcGUI {
     /**
      * A műveleti gombok eseménykezelője. Névvel rendelkező belső osztály,
      * mert paramétere (a művelet) van, és több gomb is használja. Belső
-     * osztályként eléri a külső osztály mezőit (operand1, operand2, result).
+     * osztályként eléri a külső osztály mezőit (model, operand1, operand2).
+     *
+     * Csak továbbít: beolvassa az operandusokat, a számolást a modellre bízza,
+     * végül frissíti a felületet.
      */
     class CalcActionListener implements ActionListener {
 
@@ -226,11 +247,13 @@ public class CalcGUI {
             try {
                 double a = parseOperand(operand1, "A");
                 double b = parseOperand(operand2, "B");
-                result.setText(format(operation.apply(a, b)));
+                model.calculate(a, operation, b);
+                refresh();
             } catch (NumberFormatException | ArithmeticException ex) {
                 // Hibás bemenet vagy értelmezhetetlen eredmény: ne maradjon
                 // a mezőben egy korábbi, már nem érvényes eredmény.
-                result.setText("");
+                model.clearResult();
+                refresh();
                 showError(ex.getMessage());
             }
         }

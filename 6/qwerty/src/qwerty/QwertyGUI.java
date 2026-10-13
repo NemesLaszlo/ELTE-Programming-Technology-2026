@@ -24,7 +24,12 @@ import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
 
 /**
- * Egy egyszerű QWERTY billentyűzet kijelzővel.
+ * Egy egyszerű QWERTY billentyűzet kijelzővel (az MV "V" betűje: a nézet).
+ *
+ * A nézet felépíti a felületet, az eseménykezelői meghívják a modellt
+ * (QwertyModel), majd a refresh() a modell állapota alapján frissíti a
+ * felületet. A szöveg és a Caps állapota a modellben van, nem a
+ * komponensekben.
  *
  * Az ablak felépítése (komponensfa):
  * <pre>
@@ -49,11 +54,17 @@ public class QwertyGUI {
     private static final float DISPLAY_FONT_SIZE = 20f;
     private static final int GAP = 5;
 
+    /** A modell: a beírt szöveg és a Caps állapota. */
+    private final QwertyModel model = new QwertyModel();
+
     private final JFrame frame;
     private final JTextField display;
     private final JLabel statusLabel;
     private final JToggleButton capsButton;
-    /** A betűgombok, hogy a Caps átkapcsolásakor átírhassuk a feliratukat. */
+    /**
+     * A betűgombok (a LETTERS sorrendjében), hogy a Caps átkapcsolásakor
+     * átírhassuk a feliratukat.
+     */
     private final List<JButton> letterButtons = new ArrayList<>();
 
     /**
@@ -75,11 +86,6 @@ public class QwertyGUI {
         // balról jobbra, egymás után kerülnek a panelre.
         JPanel keyPanel = new JPanel();
 
-        // A Caps gombot előre létrehozzuk, mert a betűgombok eseménykezelője
-        // az állapotát használja. A JToggleButton benyomva marad, amíg újra
-        // meg nem nyomjuk: az isSelected() adja meg az állapotát.
-        capsButton = new JToggleButton("Caps", true);
-
         for (String letter : LETTERS) {
             JButton button = new JButton(letter);
             // 1. Névvel rendelkező belső osztály: paraméterként megkapja,
@@ -100,13 +106,25 @@ public class QwertyGUI {
 
         JButton clearButton = new JButton("CLR");
         clearButton.setToolTipText("Clear the display (Esc)");
-        // 3. Lambda: az e paraméter az esemény, itt nincs rá szükségünk.
-        clearButton.addActionListener(e -> setDisplayText(""));
+        // 3. Lambda: névtelen, helyben megírt függvény. A nyíl bal oldalán a
+        // paraméter (e, az esemény, itt nincs rá szükségünk), jobb oldalán a
+        // kód, ami a gomb megnyomásakor lefut.
+        clearButton.addActionListener(e -> {
+            model.clear();
+            refresh();
+        });
         bindKey("ESCAPE", clearButton);
         keyPanel.add(clearButton);
 
+        // A JToggleButton benyomva marad, amíg újra meg nem nyomjuk. Az
+        // állapotát mégsem tőle kérdezzük, hanem a modelltől: a refresh a
+        // modell alapján állítja be (setSelected).
+        capsButton = new JToggleButton("Caps");
         capsButton.setToolTipText("Switch between upper and lower case letters");
-        capsButton.addActionListener(e -> updateLetterCase());
+        capsButton.addActionListener(e -> {
+            model.toggleCapsLock();
+            refresh();
+        });
         keyPanel.add(capsButton);
 
         statusLabel = new JLabel();
@@ -119,7 +137,7 @@ public class QwertyGUI {
         frame.setContentPane(content);
 
         frame.setJMenuBar(createMenuBar());
-        setDisplayText("");
+        refresh();
 
         frame.pack();
         frame.setLocationRelativeTo(null);
@@ -175,39 +193,25 @@ public class QwertyGUI {
     }
 
     /**
-     * A kijelző minden módosítása ezen a metóduson keresztül történik, így a
-     * karakterszámláló mindig naprakész marad.
+     * A felületet mindig a modell állapotából rajzoljuk újra: a kijelzőt, a
+     * karakterszámlálót, a Caps gombot és a betűgombok feliratát. Így ezek
+     * soha nem kerülhetnek ellentmondásba egymással.
      */
-    private void setDisplayText(String text) {
-        display.setText(text);
-        statusLabel.setText("Characters: " + text.length());
+    private void refresh() {
+        display.setText(model.getText());
+        statusLabel.setText("Characters: " + model.getLength());
+        capsButton.setSelected(model.isCapsLock());
+        for (int i = 0; i < LETTERS.length; i++) {
+            letterButtons.get(i).setText(model.applyCase(LETTERS[i]));
+        }
     }
 
     /**
      * Törli a kijelzőről az utolsó karaktert, ha van.
      */
     private void backspace(ActionEvent e) {
-        String text = display.getText();
-        if (!text.isEmpty()) {
-            setDisplayText(text.substring(0, text.length() - 1));
-        }
-    }
-
-    /**
-     * A Caps állapotának megfelelően kis- vagy nagybetűssé alakítja a
-     * szöveget.
-     */
-    private String applyCase(String text) {
-        return capsButton.isSelected() ? text.toUpperCase() : text.toLowerCase();
-    }
-
-    /**
-     * A Caps átkapcsolása után a betűgombok feliratát is átírjuk.
-     */
-    private void updateLetterCase() {
-        for (JButton button : letterButtons) {
-            button.setText(applyCase(button.getText()));
-        }
+        model.backspace();
+        refresh();
     }
 
     /**
@@ -224,7 +228,8 @@ public class QwertyGUI {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            setDisplayText(display.getText() + applyCase(letter));
+            model.type(letter);
+            refresh();
         }
 
     }

@@ -6,10 +6,11 @@ import java.util.function.DoubleBinaryOperator;
  * A számológép műveletei.
  *
  * Minden művelethez tartozik egy jel (ez kerül a gombra) és egy függvény, ami
- * a két operandusból kiszámolja az eredményt. A számolás így nem a felületen
- * történik: a GUI csak beolvassa az operandusokat, meghívja a műveletet és
- * kiírja az eredményt. Új művelethez elég egy új sort felvenni ide, a gombja
- * magától megjelenik a felületen.
+ * a két operandusból kiszámolja az eredményt. A modell része: a számolás így
+ * nem a felületen történik, a GUI csak beolvassa az operandusokat, a modell
+ * (CalcModel) elvégzi a műveletet, a GUI pedig kiírja az eredményt. Új
+ * művelethez elég egy új sort felvenni ide, a gombja magától megjelenik a
+ * felületen.
  *
  * @author bli
  */

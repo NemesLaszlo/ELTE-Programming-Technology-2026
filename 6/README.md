@@ -6,9 +6,9 @@ Ezen a héten elkezdjük a grafikus felhasználói felületű (GUI) alkalmazáso
 
 | Mappa    | Típus   | Téma                                                                          |
 | -------- | ------- | ----------------------------------------------------------------------------- |
-| `calc`   | Példa   | Egyszerűsített számológép – szövegmezők, gombok, menü, hibakezelés            |
+| `calc`   | Példa   | Egyszerűsített számológép MV-ben – szövegmezők, gombok, menü, hibakezelés     |
 | `calcMVC` | Példa (Maven) | Ugyanez a számológép MVC-ben, bővítve: előzmények, memória, tesztek |
-| `qwerty` | Feladat | QWERTY billentyűzet kijelzővel – gombok ciklusból, többféle eseménykezelő     |
+| `qwerty` | Feladat | QWERTY billentyűzet kijelzővel, MV-ben – gombok ciklusból, többféle eseménykezelő |
 
 ## Miért Swing?
 
@@ -130,7 +130,8 @@ exitItem.addActionListener(new ActionListener() {
     }
 });
 
-// 3. Lambda – rövid, egyszer használt kódhoz a legtömörebb
+// 3. Lambda – névtelen, helyben megírt függvény: bal oldalt a paraméter, jobb oldalt a kód.
+//    Rövid, egyszer használt kódhoz a legtömörebb.
 clearButton.addActionListener(e -> display.setText(""));
 
 // 4. Metódusreferencia – ha a metódus paramétere (ActionEvent) egyezik az actionPerformed-ével
@@ -166,7 +167,7 @@ A Swing **nem szálbiztos**: minden komponenst egyetlen szálon, az *Event Dispa
 - **A szövegmező tartalma mindig `String`.** Számmá alakítani nekünk kell, és a `NumberFormatException`-t kezelni (ld. `calc`).
 - **Szövegek összehasonlítása `==`-vel.** A `getText()` eredményét `equals`-szal hasonlítsuk össze.
 - **Üzenetablak szülő nélkül.** A `JOptionPane.showMessageDialog(frame, ...)` első paramétere a szülőablak: fölötte jelenik meg, és amíg nyitva van, a főablak nem kezelhető (modális).
-- **Minden logika a GUI-ban.** Ha a játékszabályok az eseménykezelőkben vannak, a kód gyorsan átláthatatlanná válik és nem tesztelhető. A számolás / játéklogika kerüljön külön osztályba (modell), a GUI csak megjelenít és továbbít (ld. a következő pontot, a `calc` – `Operation` párost, illetve a 7. heti `FlashcardsMV`-t).
+- **Minden logika a GUI-ban.** Ha a játékszabályok az eseménykezelőkben vannak, a kód gyorsan átláthatatlanná válik és nem tesztelhető. A számolás / játéklogika kerüljön külön osztályba (modell), a GUI csak megjelenít és továbbít (ld. a következő pontot, a `calc` és a `qwerty` projektet, illetve a 7. heti `FlashcardsMV`-t).
 
 ### 6. Kódszervezés: modell–nézet (MV) és modell–nézet–vezérlő (MVC)
 
@@ -332,7 +333,7 @@ SwingUtilities.invokeLater(() -> new CounterController(new CounterModel(), new C
 
 **Hova kerül a számolás / a játékszabály?** A modellbe – akkor is, ha MVC-ben a vezérlő "irányít". A vezérlő csak közvetít: beolvas a nézetből, meghívja a modellt, és továbbadja az eredményt a nézetnek. Ökölszabály: ha egy kód akkor is kellene, ha holnap lecserélnénk a felületet, az a modellbe való.
 
-Egy teljes, kibővített MVC példa a `calcMVC` projekt (ld. lent).
+MV szerkezetű a `calc` és a `qwerty` projekt, egy teljes, kibővített MVC példa pedig a `calcMVC` (ld. lent).
 
 Mindkét esetben a lényeg ugyanaz: **a modellben nincs Swing**, ezért külön, felület nélkül is tesztelhető JUnit-tal (ld. 4. hét), és a felület lecserélhető anélkül, hogy a szabályokhoz hozzányúlnánk. Maga a Swing is ezt a gondolatot követi: a `JTable` adatait egy `TableModel`, a `JList` elemeit egy `ListModel` tárolja, a komponens csak megjeleníti őket. Ugyanez a szétválasztás jelenik meg a weben is (pl. Reactben az állapot és a komponensek), és a legtöbb asztali és mobil keretrendszerben (MVC, MVVM).
 
@@ -355,11 +356,16 @@ Az egyszerűsített számológép, amit a félév elején átfutottunk. A számo
 
 ### Felépítés
 
-| Osztály     | Feladat                                                                               |
-| ----------- | ------------------------------------------------------------------------------------- |
-| `Calc`      | belépési pont, az EDT-n létrehozza a felületet                                       |
-| `CalcGUI`   | a felület felépítése és az eseménykezelők                                              |
-| `Operation` | a műveletek (`enum`): jel + számoló függvény – itt van a "logika", nem a GUI-ban     |
+A program a *modell–nézet* (MV) szerkezetet követi (ld. a *Swing alapok* 6. pontját):
+
+| Osztály     | Réteg  | Feladat                                                                          |
+| ----------- | ------ | -------------------------------------------------------------------------------- |
+| `Calc`      | –      | belépési pont, az EDT-n létrehozza a felületet                                   |
+| `CalcModel` | modell | elvégzi a számolást, és tárolja az eredményt – Swing nélkül                      |
+| `Operation` | modell | a műveletek (`enum`): jel + számoló függvény – itt van a "logika", nem a GUI-ban |
+| `CalcGUI`   | nézet  | a felület felépítése, az operandusok beolvasása, az eseménykezelők; minden esemény után a `refresh()` a modellből írja ki az eredményt |
+
+A szöveg és a szám közötti átalakítás (beolvasás tizedesvesszővel, formázás `.0` nélkül) a nézetben marad: a modell számokkal dolgozik, a felület szövegekkel.
 
 A gombokat nem egyesével írjuk meg: a program végigmegy az `Operation` értékein, és mindegyikhez létrehoz egy gombot ugyanazzal az eseménykezelő osztállyal, csak más paraméterrel. Új művelethez (pl. maradékos osztás) elég egy új sort felvenni az `Operation`-be, a gomb magától megjelenik.
 
@@ -367,9 +373,9 @@ A gombokat nem egyesével írjuk meg: a program végigmegy az `Operation` érté
 
 | Esemény                       | Eseménykezelő              | Tevékenység                                                                   |
 | ----------------------------- | -------------------------- | ----------------------------------------------------------------------------- |
-| `+`, `-`, `*`, `/`, `^` gomb  | `CalcActionListener(op)`   | beolvassa a két operandust, elvégzi a műveletet, kiírja az eredményt; hiba esetén hibaüzenet |
-| *Calc → Clear* (Ctrl+L)       | lambda                     | törli mindhárom mezőt                                                         |
-| *Calc → Use result as A* (Ctrl+R) | lambda                 | az eredményt átírja az A mezőbe, így láncolhatók a műveletek                  |
+| `+`, `-`, `*`, `/`, `^` gomb  | `CalcActionListener(op)`   | beolvassa a két operandust, a modellel elvégezteti a műveletet (`model.calculate`), kiírja az eredményt; hiba esetén hibaüzenet |
+| *Calc → Clear* (Ctrl+L)       | lambda                     | törli a két operandust és a modellben az eredményt                            |
+| *Calc → Use result as A* (Ctrl+R) | lambda                 | a modell eredményét átírja az A mezőbe, így láncolhatók a műveletek           |
 | *Calc → Exit* (Ctrl+Q)        | lambda                     | kilép a programból                                                            |
 
 ### Hibakezelés
@@ -396,7 +402,7 @@ Ugyanez a számológép modell–nézet–vezérlő szerkezetben, kibővítve, �
 - a README-je röviden elmagyarázza a lambdákat és a metódusreferenciákat (`this::calculate`, `model::clearHistory`),
 - **Maven projekt:** NetBeansben *File → Open Project*, majd a `calcMVC` mappa; futtatás **F6**, tesztek **Alt+F6**.
 
-A `calc` és a `calcMVC` összevetése jól mutatja, mit nyerünk a szétválasztással: a számolás szabályai felület nélkül tesztelhetők, és a felület átrendezése (pl. a gombok helyett menü) nem érinti a modellt.
+A `calc` (MV) és a `calcMVC` (MVC) összevetése jól mutatja a két szerkezet közötti különbséget: MV-ben a nézet kezeli az eseményeket és frissíti magát minden esemény után, MVC-ben ezt a vezérlő teszi, a modell értesítése alapján. A lényeg mindkettőben közös: a számolás szabályai felület nélkül tesztelhetők, és a felület átrendezése (pl. a gombok helyett menü) nem érinti a modellt.
 
 ## Feladat – QWERTY billentyűzet
 
@@ -418,9 +424,17 @@ Készítsünk egy QWERTY billentyűzetet és hozzá egy kijelzőt (ami egy szöv
 
 ### A megoldás
 
+A program a *modell–nézet* (MV) szerkezetet követi (ld. a *Swing alapok* 6. pontját):
+
+| Osztály       | Réteg  | Feladat                                                                       |
+| ------------- | ------ | ----------------------------------------------------------------------------- |
+| `Qwerty`      | –      | belépési pont, az EDT-n létrehozza a felületet                                |
+| `QwertyModel` | modell | a beírt szöveg és a Caps állapota; betű beírása, törlés, Caps váltás – Swing nélkül |
+| `QwertyGUI`   | nézet  | a felület felépítése és az eseménykezelők; minden esemény után a `refresh()` a modellből rajzolja újra a felületet |
+
 - A betűgombokat egy tömbből, **ciklusban** hozzuk létre – ugyanígy készül majd a beadandók játéktáblája is.
 - A kijelző nem szerkeszthető (`setEditable(false)`), rá csak a gombokkal lehet írni.
-- A kijelző minden módosítása egyetlen metóduson (`setDisplayText`) megy keresztül, így az állapotsor karakterszámlálója mindig naprakész.
+- A szöveget és a Caps állapotát nem a komponensekből (`display.getText()`, `capsButton.isSelected()`) olvassuk vissza, hanem a modell tárolja. Az eseménykezelők csak a modellt módosítják, a felületet pedig egyetlen metódus, a `refresh()` írja ki a modell alapján: a kijelzőt, a karakterszámlálót, a Caps gombot és a betűgombok feliratát. Így ezek mindig összhangban vannak.
 - Az eseménykezelők a négy lehetséges formában készültek (ld. fent), hogy mindegyikre legyen példa.
 
 A feladatleíráson túli kiegészítések:
@@ -445,10 +459,12 @@ A feladatleíráson túli kiegészítések:
 
 | Esemény                                | Eseménykezelő                    | Tevékenység                                     |
 | -------------------------------------- | -------------------------------- | ----------------------------------------------- |
-| `Q`…`Y` gomb vagy billentyű            | `QwertyListener(letter)` (belső osztály) | a betűt (a Caps szerinti alakban) a kijelző végére írja |
-| `Back` gomb vagy Backspace             | `this::backspace` (metódusreferencia)   | törli az utolsó karaktert, ha van              |
-| `CLR` gomb vagy Esc                    | lambda                           | törli a kijelzőt                                |
-| `Caps` kapcsoló                        | lambda                           | átírja a betűgombok feliratát kis- / nagybetűre |
+| `Q`…`Y` gomb vagy billentyű            | `QwertyListener(letter)` (belső osztály) | a betűt (a Caps szerinti alakban) a szöveg végére írja (`model.type`) |
+| `Back` gomb vagy Backspace             | `this::backspace` (metódusreferencia)   | törli az utolsó karaktert, ha van (`model.backspace`) |
+| `CLR` gomb vagy Esc                    | lambda                           | törli a szöveget (`model.clear`)                |
+| `Caps` kapcsoló                        | lambda                           | kis- / nagybetűre vált (`model.toggleCapsLock`), a gombok felirata is követi |
+
+Mindegyik eseménykezelő a modell módosítása után a `refresh()`-t hívja.
 | *QWERTY → Exit* (Ctrl+Q)               | névtelen osztály                 | kilép a programból                              |
 
 ### Továbbfejlesztési ötletek
