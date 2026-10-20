@@ -1,0 +1,11 @@
+How do we create an abstract class in Java?~By using the abstract keyword: public abstract class SomeClass.
+What is an abstract method?~A method without a body (implementation); the subclasses must implement it.
+What are some primitive types in Java?~int, double, boolean, char
+What language was Java most inspired by?~C++
+How does a foreach loop that loops through an ArrayList of Strings look like in Java?~for (String s : names) { ... }
+What is the difference between == and equals() for Strings?~== compares the references, equals() compares the contents.
+What does the final keyword mean on a field?~The field can be assigned only once, in its declaration or in the constructor.
+What is an interface?~A set of abstract methods that a class promises to implement (implements keyword).
+Which Swing class represents a top-level window?~JFrame
+On which thread must Swing components be created and modified?~On the Event Dispatch Thread (EDT), e.g. via SwingUtilities.invokeLater.
+What does model-view (MV) separation mean?~The model stores the state and the rules without Swing; the view displays the model and forwards the events to it.
