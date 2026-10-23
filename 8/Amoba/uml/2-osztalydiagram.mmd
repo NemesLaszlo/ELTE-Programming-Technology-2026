@@ -1,0 +1,108 @@
+classDiagram
+    direction TB
+
+    namespace modell {
+        class Player {
+            <<enumeration>>
+            X
+            O
+            +other() Player
+        }
+        class BoardSize {
+            <<enumeration>>
+            SMALL
+            MEDIUM
+            LARGE
+            -columns : int
+            -rows : int
+            +getColumns() int
+            +getRows() int
+            +toString() String
+        }
+        class Position {
+            <<record>>
+            row : int
+            col : int
+        }
+        class Board {
+            +WINNING_LENGTH : int = 4$
+            -DIRECTIONS : int[][]$
+            -rows : int
+            -columns : int
+            -fields : Player[][]
+            -pieceCount : int
+            +Board(rows : int, columns : int)
+            +Board(size : BoardSize)
+            +getRows() int
+            +getColumns() int
+            +getPieceCount() int
+            +get(row : int, col : int) Player
+            +get(position : Position) Player
+            +isColumnFull(col : int) boolean
+            +isFull() boolean
+            +drop(col : int, player : Player) Position
+            +hasLineThrough(position : Position) boolean
+            -count(from : Position, dRow : int, dCol : int) int
+            -isInside(row : int, col : int) boolean
+        }
+        class Game {
+            +FIRST_PLAYER : Player = X$
+            -rows : int
+            -columns : int
+            -board : Board
+            -currentPlayer : Player
+            -winner : Player
+            -over : boolean
+            +Game(size : BoardSize)
+            ~Game(rows : int, columns : int)
+            +newGame(size : BoardSize)
+            +newGame()
+            +canDrop(col : int) boolean
+            +drop(col : int) Position
+            +isOver() boolean
+            +isDraw() boolean
+            +getWinner() Player
+            +getCurrentPlayer() Player
+            +getBoard() Board
+        }
+    }
+
+    namespace nezet {
+        class AmobaGUI {
+            -game : Game
+            -frame : JFrame
+            -boardPanel : JPanel
+            -statusLabel : JLabel
+            -buttons : JButton[][]
+            +AmobaGUI(game : Game)
+            -createMenuBar() JMenuBar
+            -newGame(size : BoardSize)
+            -rebuildBoard()
+            -drop(col : int)
+            -showResult()
+            -refreshField(position : Position)
+            -refreshStatus()
+            -refreshAll()
+        }
+        class ColumnListener {
+            -col : int
+            +actionPerformed(e : ActionEvent)
+        }
+    }
+
+    class Amoba {
+        +main(args : String[])$
+    }
+
+    Game "1" *-- "1" Board : board
+    Game --> Player : currentPlayer, winner
+    Board --> "0..*" Player : fields
+    Board ..> Position : létrehozza
+    Game ..> BoardSize : newGame
+    AmobaGUI --> Game : game
+    AmobaGUI *-- ColumnListener : belső osztály
+    ColumnListener ..|> ActionListener
+    AmobaGUI ..> Position : refreshField
+    AmobaGUI ..> BoardSize : menü
+    Amoba ..> Game : létrehozza
+    Amoba ..> AmobaGUI : létrehozza

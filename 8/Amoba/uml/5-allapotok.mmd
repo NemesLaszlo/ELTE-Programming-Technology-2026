@@ -1,0 +1,12 @@
+stateDiagram-v2
+    state "Fut" as Fut
+    state "Győzelem" as Gyozelem
+    state "Döntetlen" as Dontetlen
+
+    [*] --> Fut : newGame(size) – üres tábla, X kezd
+    Fut --> Fut : drop(col) – nincs négyes, a tábla nem telt be: a másik játékos jön
+    Fut --> Gyozelem : drop(col) – négyes vízszintesen, függőlegesen vagy átlósan: winner = a lépő
+    Fut --> Dontetlen : drop(col) – a tábla betelt négyes nélkül
+    Gyozelem --> Fut : newGame() – automatikusan, az üzenet után
+    Dontetlen --> Fut : newGame() – automatikusan, az üzenet után
+    note right of Gyozelem : drop() kivételt dob, canDrop() hamis

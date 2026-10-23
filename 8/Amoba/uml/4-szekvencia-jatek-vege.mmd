@@ -1,0 +1,25 @@
+sequenceDiagram
+    actor J as Játékos
+    participant GUI as AmobaGUI
+    participant G as Game
+    participant B as Board
+
+    J->>GUI: kattintás egy gombra (col)
+    GUI->>G: canDrop(col)
+    G-->>GUI: true
+    GUI->>G: drop(col)
+    G->>B: drop(col, X)
+    B-->>G: landed
+    G->>B: hasLineThrough(landed)
+    B-->>G: true
+    G->>G: winner = X, over = true
+    G-->>GUI: landed
+    GUI->>GUI: refreshField(landed), refreshStatus() – "X nyert"
+    GUI->>G: isOver()
+    G-->>GUI: true
+    GUI->>J: JOptionPane: "X nyert! Új játék kezdődik."
+    J-->>GUI: OK
+    GUI->>G: newGame()
+    G->>B: new Board(rows, columns)
+    Note right of G: currentPlayer = X, winner = null, over = false
+    GUI->>GUI: refreshAll() – üres tábla, "X következik"

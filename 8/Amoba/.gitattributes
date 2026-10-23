@@ -1,0 +1,9 @@
+# Minden szövegfájl LF sorvéggel kerül a repóba és a munkakönyvtárba is,
+# minden rendszeren (Windows, macOS, Linux), a gépenkénti git-beállítástól
+# (core.autocrlf) függetlenül. A NetBeans, az IntelliJ és a javac is kezeli.
+* text=auto eol=lf
+
+# Bináris fájlok: a git nem nyúl hozzájuk.
+*.jar binary
+*.png binary
+*.pdf binary

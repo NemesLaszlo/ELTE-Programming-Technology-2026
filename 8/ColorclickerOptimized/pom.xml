@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>hu.elte.progtech</groupId>
+    <artifactId>ColorclickerOptimized</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>ColorclickerOptimized</name>
+    <description>Color clicker – optimalizált változat Model-View szerkezetben: csak a változott gombok frissülnek</description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- A nyelvi szint: JDK 17. A projekt minden újabb JDK-n (21, 25, ...)
+             is fordul és fut. -->
+        <maven.compiler.release>17</maven.compiler.release>
+        <!-- A főosztály. NetBeansben a Run (F6) az nbactions.xml alapján indul,
+             IntelliJ-ben a .run/ColorclickerOptimized.run.xml alapján, parancssorból az
+             "mvn compile exec:java" és a "java -jar" ezt használja. -->
+        <exec.mainClass>colorclicker.Colorclicker</exec.mainClass>
+    </properties>
+
+    <dependencies>
+        <!-- JUnit 4: csak a tesztekhez kell, a kész programba nem kerül bele.
+             Ugyanaz, mint a 4. heti Race és a 7. heti FlashcardsMV tesztjeinél. -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <!-- Minden figyelmeztetést kérünk a fordítótól. -->
+                    <compilerArgs>
+                        <arg>-Xlint:all</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+            </plugin>
+            <plugin>
+                <!-- A jar fájlba beírjuk a főosztályt, így futtatható:
+                     java -jar target/ColorclickerOptimized-1.0-SNAPSHOT.jar -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.4.1</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>${exec.mainClass}</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <!-- Futtatás parancssorból, fordítás után (Windowson és macOS-en is):
+                     mvn compile exec:java -->
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.6.3</version>
+                <configuration>
+                    <mainClass>${exec.mainClass}</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

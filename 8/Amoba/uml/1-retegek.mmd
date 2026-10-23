@@ -1,0 +1,26 @@
+flowchart TB
+    subgraph nezet["NÉZET (Swing) – AmobaGUI"]
+        GUI[AmobaGUI]
+        CL[ColumnListener]
+    end
+    subgraph modell["MODELL (nincs Swing)"]
+        G[Game]
+        B[Board]
+        P[Player]
+        BS[BoardSize]
+        POS[Position]
+    end
+    subgraph teszt["TESZTEK (JUnit)"]
+        T[BoardTest, GameTest]
+    end
+
+    CL -->|"kattintás: drop(col)"| GUI
+    GUI -->|"canDrop, drop, newGame, isOver, getWinner"| G
+    GUI -->|"get(row, col), getRows, getColumns"| B
+    GUI -->|"menü: Új játék"| BS
+    G -->|"drop, hasLineThrough, isFull"| B
+    G --> P
+    B --> P
+    B -. létrehozza .-> POS
+    T --> G
+    T --> B

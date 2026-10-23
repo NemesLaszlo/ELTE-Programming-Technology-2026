@@ -1,0 +1,25 @@
+sequenceDiagram
+    actor J as Játékos
+    participant GUI as AmobaGUI
+    participant G as Game
+    participant B as Board
+
+    J->>GUI: kattintás egy gombra (ColumnListener: drop(col))
+    GUI->>G: canDrop(col)
+    G->>B: isColumnFull(col)
+    B-->>G: false
+    G-->>GUI: true
+    GUI->>G: drop(col)
+    G->>B: drop(col, currentPlayer)
+    Note right of B: a jel az oszlop legalsó üres mezőjére esik
+    B-->>G: landed : Position
+    G->>B: hasLineThrough(landed)
+    B-->>G: false
+    G->>B: isFull()
+    B-->>G: false
+    G->>G: currentPlayer = currentPlayer.other()
+    G-->>GUI: landed
+    GUI->>GUI: refreshField(landed) – csak ez az egy gomb
+    GUI->>GUI: refreshStatus() – "O következik"
+    GUI->>G: isOver()
+    G-->>GUI: false
