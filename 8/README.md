@@ -10,6 +10,8 @@ Ezen a héten egy táblás ügyességi játékot, a **Color clickert** nézzük 
 | `ColorclickerOptimized` | Feladat        | Ugyanez **MV-ben és optimalizálva**: a `Board` modell megmondja, mely mezők változtak, a nézet csak azokat frissíti; JUnit tesztek |
 | `Amoba`                 | Minta beadandó | **Potyogós amőba**, a 2. beadandó 1. feladata: teljes megoldás MV-ben, tesztekkel, UML-lel, dokumentációval: [`Amoba/README.md`](Amoba/README.md) |
 
+> **A beadandó dokumentációját DOCX vagy PDF formátumban kell leadni.** A minta leírása csak azért Markdown (`README.md`), mert a repó a GitHubon így olvasható. A tartalma a lényeg: ugyanezeket a részeket kell a saját, DOCX/PDF dokumentációtokba is beletenni.
+
 A két Color clicker **kívülről ugyanaz**: ugyanaz az ablak, ugyanúgy játszható. A különbség a kód szervezése, és hogy kattintásonként 5 vagy 400 gombot rajzolunk újra.
 
 **Új ezen a héten:** a projektek **Maven-projektek** (mint a 6. heti `calcMVC`), nem NetBeans Ant-projektek. Ezért NetBeansben és **IntelliJ IDEA-ban** is ugyanúgy megnyithatók, és parancssorból is fordulnak (ld. [Futtatás](#futtatás)). A beadandót is érdemes így készíteni: az oktató bármelyik IDE-vel meg tudja nyitni.
@@ -254,7 +256,7 @@ A feladatlap közös követelményei, és hogy a mintában hol vannak megoldva:
 | Az ablak mérete igazodjon a táblához | a gombrács újraépítése után `frame.pack()` (`AmobaGUI.newGame`) |
 | Új játék a méret megadásával | `enum` a méreteknek, a menü a `values()`-ból épül; `newGame(size)` |
 | A játék végének felismerése, a győztes kiírása, **automatikus új játék** | a modell `isOver()`/`getWinner()`, a nézet `JOptionPane` után `newGame()` és teljes frissítés |
-| Dokumentáció: a feladat elemzése, a program szerkezete **UML osztálydiagrammal**, esemény–eseménykezelő párosítások, a tevékenységek leírása | [`Amoba/README.md`](Amoba/README.md) 1., 2.3, 3. szakasz; a diagramok Mermaidben, a forrás az `uml/` mappában |
+| Dokumentáció: a feladat elemzése, a program szerkezete **UML osztálydiagrammal**, esemény–eseménykezelő párosítások, a tevékenységek leírása; **DOCX vagy PDF** fájlban | a tartalomra minta: [`Amoba/README.md`](Amoba/README.md) 1., 2.3, 3. szakasz (a mintában Markdown, a beadandóban DOCX/PDF); a diagram bármilyen eszközzel készülhet, képként kerül a dokumentumba |
 | Tesztek (a prezentáción kérdezzük) | JUnit a modellhez, a szabályonként egy teszt |
 
 Tippek az egyes feladatokhoz (mi a **modell állapota**, mi a **lépés**, mikor van **vége**):
@@ -280,7 +282,7 @@ Tippek az egyes feladatokhoz (mi a **modell állapota**, mi a **lépés**, mikor
 - **Véletlen a modellben:** a `Random`-ot a konstruktor kapja, a teszt rögzített maggal adja (`new Random(42)`), így a "véletlen" is tesztelhető (ld. `ColorclickerOptimized`).
 - **A játék vége után** a modell ne fogadjon el lépést (`canDrop`/`canMove` hamis, a művelet kivételt dob); a nézet az üzenet után `newGame()`-et hív és mindent frissít.
 - **Ne tároljuk kétszer** ugyanazt (pl. a nézetben is egy `currentPlayer` mezőt): előbb-utóbb eltér a modelltől.
-- **Dokumentáció:** a README-ben legyen benne az elemzés, az osztálydiagram, az esemény-táblázat, a tesztek és a futtatás. A Mermaid-diagramokat a GitHub megjeleníti; képpé a [mermaid.live](https://mermaid.live) oldalon vagy a `mermaid-cli`-vel alakíthatók.
+- **Dokumentáció:** **DOCX vagy PDF** fájlban adjátok le (nem Markdownban: a minta csak a GitHub miatt `README.md`). Legyen benne az elemzés, az osztálydiagram, az esemény–eseménykezelő táblázat, a tesztek és a futtatás leírása. Az UML-diagramot **bármilyen eszközzel** elkészíthetitek (pl. draw.io, StarUML, PlantUML, Mermaid, Visual Paradigm, vagy akár kézzel rajzolva és beszkennelve), a lényeg, hogy képként benne legyen a dokumentumban, és egyezzen a kóddal.
 - **A következő szint:** ha a modell observer-mintával értesítené a nézetet (6. heti `calcMVC`), a `refresh` hívásokat sem kellene kézzel kiírni. A beadandóhoz az MV és a kézi frissítés bőven elég.
 
 ## Futtatás

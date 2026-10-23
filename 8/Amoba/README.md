@@ -13,6 +13,8 @@ Ez a projekt azt mutatja meg, hogyan néz ki egy **beadásra kész** megoldás a
 
 A 7. heti `FlashcardsMV` és a 8. heti `ColorclickerOptimized` ugyanerre a mintára épül; érdemes azokat is megnézni.
 
+> **Fontos a formátumról:** a beadandó dokumentációját **DOCX vagy PDF** fájlban kell leadni. Ez a leírás csak azért Markdown (`README.md`), mert a repó a GitHubon így olvasható; a **tartalma** a minta: ugyanezek a szakaszok (elemzés, szerkezet és osztálydiagram, esemény–eseménykezelő párosítások, tesztek, futtatás) kellenek a saját dokumentációtokba is. A diagramokat **bármilyen eszközzel** elkészíthetitek (draw.io, StarUML, PlantUML, Mermaid, Visual Paradigm, kézzel rajzolva és beszkennelve), képként a dokumentumba illesztve.
+
 ---
 
 ## 1. A feladat
@@ -252,7 +254,7 @@ classDiagram
 
 Jelölések: `*--` kompozíció (a `Game` hozza létre és birtokolja a `Board`-ot, új játéknál újat készít), `-->` asszociáció (mezőben tárolt hivatkozás), `..>` függőség (csak használja vagy létrehozza), `..|>` megvalósítás. A `$` a statikus, a `~` a csomagszintű tagokat jelöli.
 
-A diagram forrása és képként: [`uml/2-osztalydiagram.mmd`](uml/2-osztalydiagram.mmd), [`.svg`](uml/2-osztalydiagram.svg), [`.png`](uml/2-osztalydiagram.png).
+A diagram forrása és képként: [`uml/2-osztalydiagram.mmd`](uml/2-osztalydiagram.mmd), [`.svg`](uml/2-osztalydiagram.svg), [`.png`](uml/2-osztalydiagram.png). A mintában Mermaid-szöveggel készült, de ez nem követelmény: a saját dokumentációba bármilyen eszközzel rajzolt osztálydiagram jó, képként beillesztve.
 
 ### 2.4 Az osztályok és a metódusok
 
