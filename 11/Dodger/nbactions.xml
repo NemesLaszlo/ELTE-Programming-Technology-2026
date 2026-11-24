@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    NetBeans-beállítás: mit csináljon a Run (F6), a Debug (Ctrl+F5), a Run File
+    (Shift+F6) és a Debug File parancs.
+    A NetBeans alapértelmezése a főosztály nevét (${packageClassName}) próbálja
+    kitalálni, ami nem mindig sikerül; itt ezért konkrétan megadjuk: dodger.Dodger.
+    A "java" helyére a NetBeans a projekthez beállított JDK-t teszi, így
+    Windowson, macOS-en és Linuxon is működik.
+
+    Az enable-native-access=ALL-UNNAMED kapcsoló: a SQLite-driver natív
+    könyvtárat tölt be; a JDK 24-től ezt figyelmeztetéssel jelzi, ha nincs
+    engedélyezve (régebbi JDK-n a kapcsoló nem árt). Az exec.args elejére
+    tettük (nem csak az exec.vmArgs-ba), mert a NetBeans a Project Properties
+    > Run > VM Options értékével felülírja az exec.vmArgs-ot, az exec.args-ot
+    viszont innen veszi. Ha a figyelmeztetés mégis megjelenik, zárjuk be és
+    nyissuk meg újra a projektet (a NetBeans a megnyitáskor olvassa be ezt
+    a fájlt).
+
+    A programok kimenete szándékosan csak ASCII karaktereket használ (angol
+    üzenetek): az IDE-k Output ablaka és a terminálok kódlapja gépenként más,
+    az ékezetes betűk nem mindenhol jelennének meg jól.
+-->
+<actions>
+    <action>
+        <actionName>run</actionName>
+        <packagings>
+            <packaging>jar</packaging>
+        </packagings>
+        <goals>
+            <goal>process-classes</goal>
+            <goal>org.codehaus.mojo:exec-maven-plugin:3.6.3:exec</goal>
+        </goals>
+        <properties>
+            <exec.vmArgs></exec.vmArgs>
+            <exec.args>--enable-native-access=ALL-UNNAMED ${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
+            <exec.appArgs></exec.appArgs>
+            <exec.mainClass>dodger.Dodger</exec.mainClass>
+            <exec.executable>java</exec.executable>
+        </properties>
+    </action>
+    <action>
+        <actionName>debug</actionName>
+        <packagings>
+            <packaging>jar</packaging>
+        </packagings>
+        <goals>
+            <goal>process-classes</goal>
+            <goal>org.codehaus.mojo:exec-maven-plugin:3.6.3:exec</goal>
+        </goals>
+        <properties>
+            <exec.vmArgs>-agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address}</exec.vmArgs>
+            <exec.args>--enable-native-access=ALL-UNNAMED ${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
+            <exec.appArgs></exec.appArgs>
+            <exec.mainClass>dodger.Dodger</exec.mainClass>
+            <exec.executable>java</exec.executable>
+            <jpda.listen>true</jpda.listen>
+        </properties>
+    </action>
+    <action>
+        <!-- Run File (Shift+F6) a főosztályon: ugyanez a kapcsolóval. -->
+        <actionName>run.single.main</actionName>
+        <packagings>
+            <packaging>*</packaging>
+        </packagings>
+        <goals>
+            <goal>process-classes</goal>
+            <goal>org.codehaus.mojo:exec-maven-plugin:3.6.3:exec</goal>
+        </goals>
+        <properties>
+            <exec.vmArgs></exec.vmArgs>
+            <exec.args>--enable-native-access=ALL-UNNAMED ${exec.vmArgs} -classpath %classpath ${packageClassName} ${exec.appArgs}</exec.args>
+            <exec.appArgs></exec.appArgs>
+            <exec.mainClass>${packageClassName}</exec.mainClass>
+            <exec.executable>java</exec.executable>
+        </properties>
+    </action>
+    <action>
+        <!-- Debug File (Ctrl+Shift+F5) a főosztályon. -->
+        <actionName>debug.single.main</actionName>
+        <packagings>
+            <packaging>*</packaging>
+        </packagings>
+        <goals>
+            <goal>process-classes</goal>
+            <goal>org.codehaus.mojo:exec-maven-plugin:3.6.3:exec</goal>
+        </goals>
+        <properties>
+            <exec.vmArgs>-agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address}</exec.vmArgs>
+            <exec.args>--enable-native-access=ALL-UNNAMED ${exec.vmArgs} -classpath %classpath ${packageClassName} ${exec.appArgs}</exec.args>
+            <exec.appArgs></exec.appArgs>
+            <exec.mainClass>${packageClassName}</exec.mainClass>
+            <exec.executable>java</exec.executable>
+            <jpda.listen>true</jpda.listen>
+        </properties>
+    </action>
+</actions>
