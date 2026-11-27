@@ -1,0 +1,41 @@
+sequenceDiagram
+    actor J as Játékos
+    participant T as Timer (50 ms)
+    participant GUI as DiverGUI (nézet)
+    participant G as Game (modell)
+    participant L as Leaderboard (backend)
+    participant R as JdbcHighScoreRepository
+    participant DB as adatbázis
+
+    T->>GUI: tick()
+    GUI->>G: tick()
+    Note right of G: minden 10. ütemben a cápák lépnek,<br>checkSharks: lives = 0, over = true
+    GUI->>GUI: gamePanel.repaint(), refreshStatus()
+    GUI->>G: isOver()
+    G-->>GUI: igaz
+    GUI->>T: stop()
+    GUI->>J: showInputDialog("Game over! ... Your name:")
+    J-->>GUI: "Anna"
+    GUI->>G: getScore()
+    G-->>GUI: 12
+    GUI->>L: save("Anna", 12)
+    L->>L: isValidName, new HighScore("Anna", 12, now)
+    L->>R: save(highScore)
+    R->>DB: CREATE TABLE IF NOT EXISTS (első alkalommal)
+    R->>DB: INSERT INTO highscores (name, score, created_at) VALUES (?, ?, ?)
+    alt SQLException (nem fut a MySQL, ...)
+        R-->>L: StorageException
+        L-->>GUI: StorageException
+        GUI->>J: "The database is not available: ..."
+    end
+    GUI->>L: top(10)
+    L->>R: findTop(10)
+    R->>DB: SELECT ... ORDER BY score DESC, created_at ASC LIMIT ?
+    DB-->>R: sorok
+    R-->>L: List~HighScore~
+    L->>L: toDto: helyezés + a modell mezői
+    L-->>GUI: List~HighScoreDto~
+    GUI->>J: HighScoresDialog (modális)
+    J-->>GUI: OK
+    GUI->>G: new Game() (10 pálya, 1. pálya)
+    GUI->>GUI: gamePanel.setGame, frame.pack(), timer.restart()

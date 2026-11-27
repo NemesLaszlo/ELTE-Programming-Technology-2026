@@ -1,0 +1,184 @@
+classDiagram
+    direction TB
+
+    namespace modell_jatek {
+        class Direction {
+            <<enumeration>>
+            UP
+            DOWN
+            LEFT
+            RIGHT
+            +getDRow() int
+            +getDCol() int
+            +opposite() Direction
+        }
+        class Position {
+            <<record>>
+            +row : int
+            +col : int
+            +step(Direction) Position
+        }
+        class Tile {
+            <<enumeration>>
+            ROCK
+            WATER
+            PEARL
+            +isPassable() boolean
+        }
+        class Level {
+            +LEVEL_COUNT : int$
+            -tiles : Tile[][]
+            -start : Position
+            -sharks : List~Shark~
+            +load(int number)$ Level
+            +loadAll()$ List~Level~
+            +parse(List~String~ lines)$ Level
+            +isPlayable() boolean
+            +copyTiles() Tile[][]
+            +newSharks() List~Shark~
+            +contains(Position) boolean
+            +getTile(Position) Tile
+            +getStart() Position
+            +getPearlCount() int
+        }
+        class Shark {
+            +VISION : int$
+            -position : Position
+            -direction : Direction
+            ~patrol(Level)
+            ~sees(Position, Level) boolean
+        }
+        class Game {
+            +TICK_MS, SHARK_PERIOD, LIVES : int$
+            -levels : List~Level~
+            -levelIndex : int
+            -tiles : Tile[][]
+            -diver : Position
+            -sharks : List~Shark~
+            -pearlsLeft, lives, score : int
+            -ticks : long
+            -over : boolean
+            +move(Direction) boolean
+            +tick()
+            -checkSharks()
+            -startLevel(int)
+            +getTile(Position) Tile
+            +getDiver() Position
+            +getSharks() List~Shark~
+            +getLevelNumber() int
+            +getElapsedMillis() long
+            +isOver() boolean
+        }
+    }
+
+    namespace modell_ranglista {
+        class Leaderboard {
+            +MAX_NAME_LENGTH : int$
+            -repository : HighScoreRepository
+            +save(String name, int score)
+            +top(int limit) List~HighScoreDto~
+            ~toDto(int rank, HighScore)$ HighScoreDto
+            +isValidName(String)$ boolean
+        }
+        class HighScoreRepository {
+            <<interface>>
+            +save(HighScore)
+            +findTop(int limit) List~HighScore~
+            +deleteAll()
+        }
+        class HighScore {
+            <<record>>
+            +name : String
+            +score : int
+            +createdAt : LocalDateTime
+        }
+        class HighScoreDto {
+            <<record>>
+            +rank : int
+            +name : String
+            +score : int
+            +createdAt : LocalDateTime
+        }
+        class StorageException {
+            <<exception>>
+        }
+    }
+
+    namespace tarolas {
+        class JdbcHighScoreRepository {
+            -url, user, password : String
+            -tableChecked : boolean
+            +save(HighScore)
+            +findTop(int limit) List~HighScore~
+            +deleteAll()
+            -connect() Connection
+        }
+        class Database {
+            +URL, USER, PASSWORD : String$
+            +connect()$ Connection
+        }
+    }
+
+    namespace nezet {
+        class DiverGUI {
+            -frame : JFrame
+            -gamePanel : GamePanel
+            -timer : Timer
+            -leaderboard : Leaderboard
+            -game : Game
+            -tick()
+            -gameOver()
+            -askName() String
+            -showHighScores()
+            -newGame()
+        }
+        class GamePanel {
+            +CELL : int$
+            -game : Game
+            +setGame(Game)
+            +paintComponent(Graphics)
+            -bindKeys()
+            -drawTile(Graphics2D, Position)
+            -drawShark(Graphics2D, Shark)
+            -drawDiver(Graphics2D, Position)
+        }
+        class HighScoresDialog {
+            +HighScoresDialog(Frame, List~HighScoreDto~)
+        }
+    }
+
+    class Diver {
+        +main(String[] args)$
+    }
+
+    Game "1" o-- "1..*" Level : levels
+    Game "1" *-- "*" Shark : sharks
+    Level "1" *-- "*" Shark : kezdőhelyek
+    Game ..> Position
+    Game ..> Tile
+    Game ..> Direction
+    Shark --> Position
+    Shark --> Direction
+    Level ..> Position
+    Level ..> Tile
+    Position ..> Direction
+
+    Leaderboard "1" --> "1" HighScoreRepository : tároló
+    Leaderboard ..> HighScore : modell, befelé
+    Leaderboard ..> HighScoreDto : DTO, kifelé
+    Leaderboard ..> StorageException
+    HighScoreRepository ..> HighScore
+    HighScoreRepository ..> StorageException
+    HighScoreRepository <|.. JdbcHighScoreRepository
+    JdbcHighScoreRepository ..> Database : URL, USER, PASSWORD
+
+    Diver ..> DiverGUI : létrehozza
+    Diver ..> Leaderboard : létrehozza
+    Diver ..> JdbcHighScoreRepository : létrehozza
+    DiverGUI "1" --> "1" Game : modell
+    DiverGUI "1" *-- "1" GamePanel
+    DiverGUI "1" --> "1" Leaderboard : save, top
+    DiverGUI ..> HighScoresDialog : létrehozza
+    DiverGUI ..> StorageException : elkapja
+    GamePanel --> Game : rajzolja, move
+    HighScoresDialog ..> HighScoreDto : megjeleníti

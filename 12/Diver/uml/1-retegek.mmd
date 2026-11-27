@@ -1,0 +1,27 @@
+flowchart LR
+    subgraph nezet [nézet – Swing]
+        GUI[DiverGUI<br>ablak, menü, állapotsor, Timer]
+        Panel[GamePanel<br>paintComponent, key binding]
+        Dialog[HighScoresDialog<br>JTable]
+    end
+    subgraph backend [backend – modell: nincs Swing]
+        Game[Game<br>move, tick, életek, pont, idő]
+        Level[Level<br>pálya fájlból, isPlayable]
+        Shark[Shark<br>patrol, sees]
+        Board[Leaderboard<br>save, top → HighScoreDto<br>modell: HighScore]
+        Repo[/HighScoreRepository<br>interfész/]
+    end
+    subgraph db [tárolás – JDBC: az egyetlen hely, ahol SQL van]
+        Jdbc[JdbcHighScoreRepository<br>CREATE TABLE, INSERT, SELECT]
+        Database[Database<br>URL, user, password]
+    end
+    GUI -->|tick, isOver, getScore| Game
+    Panel -->|move, getTile, getDiver, getSharks| Game
+    GUI -->|save, top| Board
+    Board --> Repo
+    Jdbc -.->|megvalósítja| Repo
+    Jdbc --> Database
+    Database -->|jdbc:sqlite / jdbc:mysql| DB[(diver.db<br>vagy MySQL)]
+    Level -->|getResourceAsStream| Files[/levels/level01..10.txt/]
+    Game --> Level
+    Game --> Shark

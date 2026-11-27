@@ -1,0 +1,16 @@
+stateDiagram-v2
+    [*] --> Playing : new Game, 1. pálya, 3 élet, 0 pont
+
+    state Playing {
+        [*] --> Safe
+        Safe --> Safe : move, szabad mező, gyöngynél score++
+        Safe --> Safe : tick, a cápák lépnek, nem látnak
+        Safe --> Caught : move vagy tick, egy cápa látja a búvárt
+        Caught --> Safe : van még élet, a búvár a kezdőhelyre
+        Safe --> LevelDone : move, az utolsó gyöngy
+        LevelDone --> Safe : következő pálya, az utolsó után az első
+    }
+
+    Caught --> Over : elfogyott az élet
+    Over --> Over : move, tick, nem történik semmi
+    Over --> [*] : a nézet, név, mentés, ranglista, új Game

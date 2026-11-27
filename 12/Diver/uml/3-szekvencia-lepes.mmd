@@ -1,0 +1,29 @@
+sequenceDiagram
+    actor J as Játékos
+    participant P as GamePanel (nézet)
+    participant G as Game (modell)
+    participant S as Shark
+
+    J->>P: W / A / S / D lenyomása (key binding)
+    P->>G: move(direction)
+    alt vége a játéknak, vagy a célmező szikla / a pályán kívül
+        G-->>P: false (nem történt semmi)
+    else szabad mező
+        G->>G: diver = next
+        opt a mezőn gyöngy
+            G->>G: tiles[next] = WATER, pearlsLeft--, score++
+        end
+        alt pearlsLeft == 0
+            G->>G: startLevel(következő): új tábla, búvár a kezdőhelyre, cápák a kezdőhelyükre
+        else
+            loop minden cápára
+                G->>S: sees(diver, level)
+                S-->>G: igaz / hamis
+            end
+            opt valamelyik látja
+                G->>G: lives--, diver = start, és ha lives == 0, akkor over = true
+            end
+        end
+        G-->>P: true
+    end
+    P->>P: repaint()

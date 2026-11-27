@@ -1,0 +1,36 @@
+# MySQL-szerver Dockerben, a gyakorlatokhoz és a beadandóhoz.
+#
+# Indítás (ebből a mappából):   docker compose up -d
+# Leállítás:                    docker compose stop
+# Törlés (az adatokkal együtt): docker compose down -v
+#
+# Ugyanez egyetlen paranccsal, compose nélkül:
+#   docker run --name progtech-mysql -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=progtech
+#     -e MYSQL_USER=progtech -e MYSQL_PASSWORD=progtech -p 3306:3306 -d mysql:latest
+#
+# A programban (Database.java) ezekkel az adatokkal kapcsolódunk:
+#   URL:      jdbc:mysql://localhost:3306/progtech
+#   user:     progtech
+#   password: progtech
+services:
+  mysql:
+    image: mysql:latest
+    container_name: progtech-mysql
+    environment:
+      # A root jelszava (adminisztrációhoz, pl. docker exec ... mysql -u root -p).
+      MYSQL_ROOT_PASSWORD: root
+      # Ezt az adatbázist a konténer az első indításkor létrehozza...
+      MYSQL_DATABASE: progtech
+      # ...és ezt a felhasználót, aki mindent csinálhat benne.
+      MYSQL_USER: progtech
+      MYSQL_PASSWORD: progtech
+    ports:
+      # gép:konténer – a programunk a saját gépünk 3306-os portjára kapcsolódik.
+      - "3306:3306"
+    volumes:
+      # Az adatok egy nevesített kötetben maradnak meg a konténer leállítása,
+      # sőt törlése után is (csak a "down -v" törli).
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
